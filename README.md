@@ -2,9 +2,6 @@
 
 It's a assignment of CIMET company. I made it using reactjs and nodejs. 
 
-# Functionality
-
-## Getting Started
 # Getting Started
 1. Clone the project by link https://github.com/peeyushmamodia17/CIMET-Assignment.git
 2. Go to folder.
