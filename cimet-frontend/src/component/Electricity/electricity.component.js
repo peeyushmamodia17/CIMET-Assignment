@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Grid, Typography, Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import React, {useState} from 'react'
 import electricityScreenStyle from "./electricity.style";
@@ -5,10 +6,26 @@ import parse from "html-react-parser";
 
 const ElectricityTemplate = ({ planList }) => {
     const [open, setOpen] = useState(false);
+    const [allPlan, setAllPlan] = useState([]);
     const classes = electricityScreenStyle();
     const handleLinkOpen = (link) => {
         window.open(link)
     }
+
+    useEffect(() => {
+        let obj = {};
+        planList.map((plan) => {
+            if (obj[plan.billing_options]) {
+                if (obj[plan.billing_options].expected_annually_bill_amount > plan.expected_annually_bill_amount) {
+                    obj[plan.billing_options] = plan
+                }
+            } else {
+                obj[plan.billing_options] = plan
+            }
+        })
+        setAllPlan(obj);
+    }, [planList])
+    
     return (
         <Grid container className={classes.headContainer}>
             <Grid item xs={12} className={classes.container}>
@@ -29,7 +46,7 @@ const ElectricityTemplate = ({ planList }) => {
                     <Typography className={classes.mainText}>Initial recommendations are based on avaerage medium usage as determined by relevant energy refulation, please view the information hover next to the estimated cost box for more information. For a more accurate comparison relevant to your circumstances, please use the bill details tab on the results page to enter your most recent energy bill details</Typography>
                 </Grid>
             </Grid>
-            {planList?.map((plan) => {
+            {Object.values(allPlan)?.map((plan) => {
                 return (
                     <>
                     <Grid item xs={12} className={classes.mainContainer}>
@@ -70,6 +87,10 @@ const ElectricityTemplate = ({ planList }) => {
                                             <p>{plan?.expected_monthly_bill_amount}</p>
                                             <p>/mo</p>
                                         </Grid>
+                                    </Grid>
+                                    <Grid xs={12}>
+                                        <Typography>{plan?.billing_options}</Typography>
+                                        <Typography>{plan?.expected_annually_bill_amount}</Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
